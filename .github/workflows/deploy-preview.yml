@@ -1,21 +1,33 @@
 name: Deploy to Cloudflare Pages on PR
+
 on:
   pull_request:
     branches:
       - main
+
+env:
+  BUN_VERSION: 1.1.2
+  PROJECT_NAME: portfolio
+  OUTPUT_DIRECTORY: dist
+
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b #v4.1.4
       - uses: oven-sh/setup-bun@8f24390df009a496891208e5e36b8a1de1f45135 #v1.2.1
         with:
-          bun-version: 1.1.2
+          bun-version: ${{ env.BUN_VERSION }}
       - run: bun install
       - run: bun run build
-      - uses: cloudflare/pages-action@f0a1cd58cd66095dee69bfa18fa5efd1dde93bca #v1.5.0
+      - id: deploy-preview
+        uses: cloudflare/pages-action@f0a1cd58cd66095dee69bfa18fa5efd1dde93bca #v1.5.0
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: portfolio
-          directory: dist
+          projectName: ${{ env.PROJECT_NAME }}
+          directory: ${{ env.OUTPUT_DIRECTORY }}
+      - uses: thollander/actions-comment-pull-request@fabd468d3a1a0b97feee5f6b9e499eab0dd903f6 #v2.5.0
+        with:
+          message: |
+            Deployed to Cloudflare Pages: [Preview](${{ steps.deploy-preview.outputs.url }})
