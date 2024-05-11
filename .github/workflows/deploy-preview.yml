@@ -24,17 +24,16 @@ jobs:
         run: bun install
       - name: Build
         run: bun run build
-      - id: deploy-preview
-        name: Deploy to preview environment
-        uses: cloudflare/pages-action@f0a1cd58cd66095dee69bfa18fa5efd1dde93bca #v1.5.0
+      - name: Deploy
+        id: deploy-preview
+        uses: cloudflare/wrangler-action@a84dcc6dd36c8769fbff7e622308c8050fc41f4f #v3.5.0
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: ${{ env.PROJECT_NAME }}
-          directory: ${{ env.OUTPUT_DIRECTORY }}
+          command: wrangler pages deploy ${{ env.OUTPUT_DIRECTORY }} --project-name=${{ env.PROJECT_NAME }}
       - name: Comment on pull request
         uses: thollander/actions-comment-pull-request@fabd468d3a1a0b97feee5f6b9e499eab0dd903f6 #v2.5.0
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           message: |
-            Deployed to Cloudflare Pages: [Preview](${{ steps.deploy-preview.outputs.url }})
+            Deployed to Cloudflare Pages: [${{ steps.deploy-preview.outputs.deployment-url }}](${{ steps.deploy-preview.outputs.deployment-url }})
