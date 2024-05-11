@@ -30,7 +30,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy ${{ env.OUTPUT_DIRECTORY }} --project-name=${{ env.PROJECT_NAME }}
+          command: pages deploy ${{ env.OUTPUT_DIRECTORY }} --project-name=${{ env.PROJECT_NAME }} --branch=${{ github.head_ref }}
       - name: Comment on pull request
         uses: thollander/actions-comment-pull-request@fabd468d3a1a0b97feee5f6b9e499eab0dd903f6 #v2.5.0
         with:
