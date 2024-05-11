@@ -32,8 +32,9 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: ${{ env.PROJECT_NAME }}
           directory: ${{ env.OUTPUT_DIRECTORY }}
-      - uses: thollander/actions-comment-pull-request@fabd468d3a1a0b97feee5f6b9e499eab0dd903f6 #v2.5.0
+      - name: Comment on pull request
+        uses: thollander/actions-comment-pull-request@fabd468d3a1a0b97feee5f6b9e499eab0dd903f6 #v2.5.0
         with:
-          GITHUB_TOKEN: ${{ secrets.PR_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           message: |
             Deployed to Cloudflare Pages: [Preview](${{ steps.deploy-preview.outputs.url }})
